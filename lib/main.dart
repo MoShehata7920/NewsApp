@@ -1,8 +1,13 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:news_app/layout/news_app/news_layout.dart';
+import 'package:news_app/shared/network/remote/dio_helper.dart';
+import 'package:news_app/shared/styles/bloc_observer.dart';
 
 void main() {
+  Bloc.observer = MyBlocObserver();
+  DioHelper.init();
   runApp(const MyApp());
 }
 
@@ -22,6 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+          primarySwatch: Colors.deepOrange,
           scaffoldBackgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(
             // ignore: deprecated_member_use
@@ -39,12 +45,17 @@ class MyApp extends StatelessWidget {
               color: Colors.black,
             ),
           ),
+          floatingActionButtonTheme:
+              FloatingActionButtonThemeData(backgroundColor: Colors.deepOrange),
           bottomNavigationBarTheme: BottomNavigationBarThemeData(
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Colors.deepOrange,
             elevation: 25,
           )),
-      home: NewsLayout(),
+      darkTheme: ThemeData(scaffoldBackgroundColor: Colors.black),
+      themeMode: ThemeMode.light,
+      home:
+          Directionality(textDirection: TextDirection.rtl, child: NewsLayout()),
     );
   }
 }
