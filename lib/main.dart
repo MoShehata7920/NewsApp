@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:bloc/bloc.dart';
+import 'dart:io';
+
+import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +14,14 @@ import 'package:news_app/shared/cubit/states.dart';
 import 'package:news_app/shared/network/local/cache_helper.dart';
 import 'package:news_app/shared/network/remote/dio_helper.dart';
 import 'package:news_app/shared/styles/bloc_observer.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 void main() async {
+  // to set minimum width and height on app
+  if (Platform.isAndroid) {
+    await DesktopWindow.setMinWindowSize(Size(350.0, 650.0));
+  }
+
   WidgetsFlutterBinding
       .ensureInitialized(); // to make sure that the below lines in main is done before running the
   Bloc.observer = MyBlocObserver();
@@ -134,8 +142,15 @@ class MyApp extends StatelessWidget {
             ),
             themeMode:
                 AppCubit.get(context).isDark ? ThemeMode.dark : ThemeMode.light,
-            home: Directionality(
-                textDirection: TextDirection.ltr, child: NewsLayout()),
+            home: ScreenTypeLayout(
+              mobile: NewsLayout(),
+              desktop: Text(
+                'Desktop',
+                style: TextStyle(fontSize: 50),
+              ),
+              breakpoints:
+                  ScreenBreakpoints(desktop: 600, tablet: 300, watch: 300),
+            ),
           );
         },
       ),
